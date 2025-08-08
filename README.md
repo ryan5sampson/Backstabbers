@@ -1,5 +1,3 @@
-# Backstabbers
-Roman Speech Genorator
 # Backstabbers – Caesar Teleprompter (Demo)
 
 ## Dev
