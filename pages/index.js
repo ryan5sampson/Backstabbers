@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
-import styles from "../styles/globals.module.css";
+import '../styles/globals.css';
+
 
 const DEFAULT_TOPICS = [
   "Bread & Circuses budget cuts",
