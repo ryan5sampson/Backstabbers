@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
-import '../styles/globals.css';
-
+import '../styles/globals.css'; // correct global CSS import
 
 const DEFAULT_TOPICS = [
   "Bread & Circuses budget cuts",
@@ -24,7 +23,6 @@ export default function Home() {
   const [wpm, setWpm] = useState(130);
   const [error, setError] = useState("");
 
-  // Teleprompter state
   const [revealedWords, setRevealedWords] = useState(0);
   const [paused, setPaused] = useState(false);
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
@@ -67,7 +65,6 @@ export default function Home() {
     }
   }
 
-  // Prepare words array on speech change
   useEffect(() => {
     if (!speech) return;
     wordsRef.current = speech.split(/\s+/);
@@ -76,24 +73,18 @@ export default function Home() {
     setCurrentTurnIndex(0);
   }, [speech]);
 
-  // Teleprompter reveal loop
   useEffect(() => {
     if (!speech || paused) return;
-
     const words = wordsRef.current;
-    if (revealedWords >= words.length) return; // done
-
-    // If we hit a turn breakpoint, pause and show TURN cue
+    if (revealedWords >= words.length) return;
     if (currentTurnIndex < turnPoints.length && revealedWords === turnPoints[currentTurnIndex]) {
       setPaused(true);
       return;
     }
-
-    const delay = 60000 / (wpm || 130); // ms per word
+    const delay = 60000 / (wpm || 130);
     timerRef.current = setTimeout(() => {
       setRevealedWords((n) => n + 1);
     }, delay);
-
     return () => clearTimeout(timerRef.current);
   }, [revealedWords, paused, speech, wpm, currentTurnIndex, turnPoints]);
 
@@ -113,13 +104,13 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet"/>
       </Head>
 
-      <div className={styles.page}>
-        <div className={styles.panel}>
-          <h1 className={styles.title}>⚔ Ave, Senator! ⚔</h1>
+      <div className="page">
+        <div className="panel">
+          <h1 className="title">⚔ Ave, Senator! ⚔</h1>
 
-          <form onSubmit={onGenerate} className={styles.form}>
+          <form onSubmit={onGenerate} className="form">
             <label>Speech topic</label>
-            <div className={styles.row}>
+            <div className="row">
               <input
                 type="text"
                 placeholder="Bread & Circuses"
@@ -150,24 +141,24 @@ export default function Home() {
             </button>
           </form>
 
-          {error && <div className={styles.error}>{error}</div>}
+          {error && <div className="error">{error}</div>}
 
           {speech && (
-            <div className={styles.teleprompter}>
-              <div className={styles.scrollbox}>
-                <p className={styles.speech}>{displayed}</p>
+            <div className="teleprompter">
+              <div className="scrollbox">
+                <p className="speech">{displayed}</p>
               </div>
 
               {paused && (
-                <div className={styles.turnBlock}>
-                  <div className={styles.turnText}>TURN AROUND!</div>
+                <div className="turnBlock">
+                  <div className="turnText">TURN AROUND!</div>
                   <button onClick={onResume}>Resume</button>
                 </div>
               )}
             </div>
           )}
 
-          <div className={styles.footerNote}>
+          <div className="footerNote">
             Length auto‑scales with player count. Turns depend on confidence.
           </div>
         </div>
