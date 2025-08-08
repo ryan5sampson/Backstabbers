@@ -1,0 +1,12 @@
+backstabbers-teleprompter/
+├─ package.json
+├─ next.config.mjs
+├─ pages/
+│  ├─ index.js
+│  └─ api/
+│     └─ generate.js
+├─ styles/
+│  └─ globals.css
+├─ public/
+│  └─ roman-bg.png   (optional; you can swap)
+└─ README.md
