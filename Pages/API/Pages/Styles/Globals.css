@@ -1,0 +1,124 @@
+:root {
+  --gold: #c9a86b;
+  --papyrus: #fff8dc;
+  --ink: #4a2e00;
+}
+
+html, body, #__next {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at center, rgba(255,248,220,0.9), rgba(255,248,220,0.9)),
+    url("/roman-bg.png");
+  background-size: cover;
+  font-family: "Times New Roman", serif;
+}
+
+.page {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.panel {
+  width: 100%;
+  max-width: 760px;
+  background: rgba(255,248,220,0.95);
+  border: 6px solid var(--gold);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.title {
+  font-family: "Cinzel", serif;
+  text-align: center;
+  margin: 0 0 16px 0;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form input[type="text"],
+.form input[type="number"],
+.form select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  background: #fffdf5;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+button {
+  background: var(--gold);
+  color: #3b2a00;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #a40000;
+  background: #fff0f0;
+  border: 2px solid #a40000;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.teleprompter {
+  margin-top: 16px;
+  border: 3px solid var(--gold);
+  border-radius: 10px;
+  background: #fffdf5;
+  padding: 16px;
+}
+
+.scrollbox {
+  min-height: 160px;
+}
+
+.speech {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.55;
+}
+
+.turnBlock {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.turnText {
+  color: #b00000;
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.footerNote {
+  opacity: 0.75;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
