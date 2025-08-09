@@ -177,3 +177,91 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
   .card{ padding: 14px; }
   .row{ gap:8px; }
 }
+/* === Teleprompter Roman theme === */
+
+/* Match setup page background already set in body */
+
+/* Card polish (speech page uses same .card) */
+.card{
+  background: var(--paper);
+  border: 6px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+}
+
+/* Laurel divider under the title */
+.laurel{
+  height: 14px;
+  margin: 4px 0 10px;
+  background:
+    radial-gradient(6px 8px at 6px 50%, #6a8f3a 40%, transparent 41%) 0 0/22px 14px repeat-x,
+    radial-gradient(6px 8px at 16px 50%, #6a8f3a 40%, transparent 41%) 0 0/22px 14px repeat-x;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.15));
+  opacity: .9;
+}
+
+/* Progress: olive bar, subtle frame */
+.progressOuter{ background:#e7dcc2; border:2px solid #d2c29b; }
+.progressInner{ background: var(--olive); }
+
+/* Teleprompter parchment pane */
+.teleWrap{ position:relative; margin-top:16px; }
+.teleprompter{
+  padding: 22px;
+  background:
+    linear-gradient(transparent 31px, rgba(0,0,0,0.04) 32px) 0 0/100% 34px, /* faint writing lines */
+    #fffef4;
+  border: 2px solid #e4d6aa;
+  border-radius: 10px;
+  min-height: 48vh;
+}
+
+/* Readability */
+.speech{
+  margin: 0 0 1.1rem 0;
+  text-align: left;
+  line-height: 1.75;
+  font-size: 1.8rem;                /* bigger by default */
+  max-width: 68ch;                  /* sensible line length */
+}
+@media (max-width: 540px){
+  .speech{ font-size: 1.5rem; line-height: 1.65; }
+}
+
+/* Overlays: turn + finish share look, with gentle fade-in */
+.turnOverlay{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(255,248,220,0.85);
+  z-index:10;
+  animation: fadeIn .18s ease-out;
+}
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+.turnCard{
+  text-align:center;
+  padding: 20px 24px;
+  border: 3px solid var(--gold);
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: 0 10px 22px rgba(0,0,0,.16);
+}
+
+/* Overlay headline */
+.turnText{
+  color:#b00000;
+  font-weight:900;
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 0 #fff;
+}
+@media (max-width:540px){ .turnText{ font-size:1.8rem; } }
+
+/* Buttons keep Roman style */
+.btn{ background: var(--gold); color: var(--ink); border:none; border-radius:10px; font-weight:800; cursor:pointer; box-shadow:0 2px 0 var(--gold-dark); }
+.btn.primary{ padding:12px 16px; }
+.btn:hover{ background:#d6b77d; }
+.btn:active{ transform: translateY(1px); box-shadow:0 1px 0 var(--gold-dark); }
+
+/* Topbar title (topic) matches setup page headline spacing */
+.title{ font-family: Cinzel, serif; letter-spacing:.06em; font-weight:800; }
