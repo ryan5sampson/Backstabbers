@@ -7,7 +7,6 @@ const DEFAULT_TOPICS = [
   "Why I, Julius Caesar, cannot possibly be killed—and why my dear friends would never betray me"
 ];
 
-];
 
 // Ensure "In conclusion" exists AND is ≥ 3 sentences before the end
 function ensureInConclusionBuffer(text) {
