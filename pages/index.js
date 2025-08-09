@@ -2,13 +2,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 const DEFAULT_TOPICS = [
-  "Bread & Circuses budget cuts",
-  "Olive oil shortages",
-  "Gladiator union negotiations",
-  "Aqueduct maintenance day",
-  "Senate toga laundry scandal",
-  "Public bath renovations",
-  "Chariot traffic laws"
+  "The glorious invention of Caesar salads",
+  "My vision: a future nation that thinks about Rome at least once a week",
+  "Why I, Julius Caesar, cannot possibly be killed—and why my dear friends would never betray me"
+];
+
 ];
 
 // Ensure "In conclusion" exists AND is ≥ 3 sentences before the end
