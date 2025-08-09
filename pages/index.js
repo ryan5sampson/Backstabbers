@@ -36,14 +36,18 @@ export default function Setup() {
       let s = (data.speech || "").replace(/\[FINISH\]\s*$/i, "").trim();
       if (!/in conclusion/i.test(s)) s += "\n\nIn conclusion, my fellow senators...";
 
-      router.push({
-        pathname: "/speech",
-        query: {
-          speech: encodeURIComponent(s),
-          confidence,
-          senators: String(senators)
-        }
-      });
+// ...everything above unchanged...
+
+router.push({
+  pathname: "/speech",
+  query: {
+    speech: encodeURIComponent(s),
+    confidence,
+    senators: String(senators),
+    topic: encodeURIComponent(topic || "Address to the Senate")   // ← add this
+  }
+});
+
     } catch (e) {
       setLoading(false);
       setError(String(e.message || e));
