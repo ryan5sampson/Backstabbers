@@ -38,28 +38,99 @@ export default function Speech() {
   const timerRef = useRef(null);
 
   // Precompute words and break candidates
-  const pre = useMemo(() => {
-    const words = rawSpeech.trim().split(/\s+/);
+const { words, sentenceEnds, turnPoints } = useMemo(() => {
+  const raw = decodeURIComponent(encoded || "");
+  const words = raw.trim().split(/\s+/);
 
-    // ends after a sentence-ending token
-    const sentenceEnds = [];
-    for (let i = 0; i < words.length; i++) {
-      if (/[.!?]["')]*$/.test(words[i])) sentenceEnds.push(i + 1);
+  // Compute sentence boundaries (index AFTER the sentence-ending token)
+  const sentenceEnds = [];
+  for (let i = 0; i < words.length; i++) {
+    if (/[.!?]["')]*$/.test(words[i])) sentenceEnds.push(i + 1);
+  }
+
+  // Build sentence ranges so we can detect which one has "in conclusion"
+  const sentences = [];
+  let prev = 0;
+  for (const end of sentenceEnds) {
+    sentences.push({ start: prev, end, text: words.slice(prev, end).join(" ") });
+    prev = end;
+  }
+  if (prev < words.length) {
+    // Trailing fragment (just in case)
+    sentences.push({ start: prev, end: words.length, text: words.slice(prev).join(" ") });
+  }
+
+  // Find first sentence that contains "in conclusion"
+  let conclSentenceIdx = sentences.findIndex(s => /(^|\s)in conclusion\b/i.test(s.text));
+  if (conclSentenceIdx === -1) conclSentenceIdx = Infinity; // no "in conclusion" found
+
+  // Candidate breakpoints by granularity
+  const sentenceOnly = sentenceEnds; // sentence ends
+  const phraseEndSet = new Set(sentenceEnds);
+  for (let i = 0; i < words.length; i++) {
+    if (/[,;:]["')]*$/.test(words[i])) phraseEndSet.add(i + 1);
+  }
+  const phraseOnly = Array.from(phraseEndSet).sort((a, b) => a - b);
+  const wordBoundaries = Array.from({ length: Math.max(0, words.length - 1) }, (_, i) => i + 1);
+
+  const totalSentences = sentenceEnds.length;
+  const firstAllowedSentence = confidence === "high" ? 3 : 2;
+
+  let candidates;
+  if (granularity === "sentence") candidates = sentenceOnly;
+  else if (granularity === "phrase") candidates = phraseOnly;
+  else candidates = wordBoundaries;
+
+  if (totalSentences <= firstAllowedSentence || candidates.length === 0) {
+    return { words, sentenceEnds, turnPoints: [] };
+  }
+
+  // Compute a "no-turn zone" starting at the beginning of the "in conclusion" sentence
+  const noTurnFromWord = conclSentenceIdx < sentences.length ? sentences[conclSentenceIdx].start : Infinity;
+
+  const mean = Math.max(1, Number(meanSentencesPerTurn) || 2);
+  const baseCount = (totalSentences - firstAllowedSentence) / mean;
+  const targetCount = Math.max(1, Math.round(baseCount * (0.8 + Math.random() * 0.4)));
+
+  const nearestCandidateAtOrAfter = (idx) => {
+    // Binary search to find first candidate >= idx
+    let lo = 0, hi = candidates.length - 1, ans = null;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if (candidates[mid] >= idx) { ans = candidates[mid]; hi = mid - 1; }
+      else lo = mid + 1;
     }
+    return ans ?? candidates[candidates.length - 1];
+  };
 
-    // phrase ends: commas/semicolons OR sentence ends
-    const phraseEnds = new Set(sentenceEnds);
-    for (let i = 0; i < words.length; i++) {
-      if (/[,;:]["')]*$/.test(words[i])) phraseEnds.add(i + 1);
-    }
-    const phraseEndList = Array.from(phraseEnds).sort((a, b) => a - b);
+  const points = [];
 
-    // between words (every boundary)
-    const wordBoundaries = [];
-    for (let i = 1; i < words.length; i++) wordBoundaries.push(i);
+  // First turn near sentence #firstAllowedSentence (±0..1), but NOT in/after "in conclusion"
+  const firstTargetSentence = Math.min(
+    totalSentences - 1,
+    firstAllowedSentence + Math.round(Math.random())
+  );
+  const firstWordIndex = sentenceEnds[firstTargetSentence] ?? sentenceEnds[firstAllowedSentence];
+  let firstPoint = nearestCandidateAtOrAfter(firstWordIndex);
+  if (firstPoint >= noTurnFromWord) firstPoint = null;
+  if (firstPoint) points.push(firstPoint);
 
-    return { words, sentenceEnds, phraseEndList, wordBoundaries };
-  }, [rawSpeech]);
+  // Remaining turns: hop ~mean sentences (±1 jitter), but never at/after "in conclusion"
+  let sIdx = firstTargetSentence;
+  while (points.length < targetCount) {
+    const jitter = Math.round((Math.random() - 0.5) * 1); // -1,0,+1
+    const step = Math.max(1, Math.round(mean + jitter));
+    sIdx += step;
+    if (sIdx >= totalSentences) break;
+    const wordIdx = sentenceEnds[sIdx];
+    let p = nearestCandidateAtOrAfter(wordIdx);
+    if (p >= noTurnFromWord) break;
+    if (points.length === 0 || p - points[points.length - 1] > 2) points.push(p);
+  }
+
+  return { words, sentenceEnds, turnPoints: points };
+}, [encoded, confidence, granularity, meanSentencesPerTurn]);
+
 
   // Generate turn points from settings (with grace period)
   const turnPoints = useMemo(() => {
