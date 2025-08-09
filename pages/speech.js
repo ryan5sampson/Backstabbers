@@ -72,11 +72,14 @@ export default function Speech() {
   useEffect(() => {
     if (!started || paused || !totalWords) return;
 
-    // pause exactly at a turn point
-    if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
-      setPaused(true);
-      return;
-    }
+// pause at a turn point, but only after a brief delay so they can read the last word
+if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
+  clearTimeout(timerRef.current);
+  timerRef.current = setTimeout(() => {
+    setPaused(true);
+  }, 800); // 0.8 second pause after the word appears
+  return;
+}
 
     const delay = 60000 / (WPM[confidence] || 125);
     timerRef.current = setTimeout(() => setRevealed(n => n + 1), delay);
