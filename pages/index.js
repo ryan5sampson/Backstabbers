@@ -79,7 +79,7 @@ export default function Setup() {
   return (
     <div className="page">
       <div className="card">
-        <h1>⚔ AVE, SENATOR! ⚔</h1>
+        <h1 className="title">⚔ AVE, SENATOR! ⚔</h1>
 
         <label>Speech Topic</label>
         <div className="row">
@@ -115,25 +115,12 @@ export default function Setup() {
           <option value="high">High</option>
         </select>
 
-        <button className="primary" disabled={loading} onClick={handleGenerate}>
+        <button className="btn primary" disabled={loading} onClick={handleGenerate}>
           {loading ? "Consulting the Augurs..." : "Generate Speech"}
         </button>
 
         {error && <div className="error">{error}</div>}
       </div>
-
-      <style jsx>{`
-        .page { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
-        .card { width: 100%; max-width: 720px; background:#fffdf5; border:6px solid #c9a86b; border-radius:12px; padding:20px; }
-        h1 { text-align:center; margin:0 0 16px; }
-        .row { display:flex; gap:8px; }
-        input, select, button { padding:10px; font-size:1rem; }
-        input, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:#fffef7; }
-        button { background:#c9a86b; color:#3b2a00; border:none; border-radius:6px; cursor:pointer; font-weight:700; }
-        .primary { width:100%; margin-top:8px; }
-        .error { margin-top:10px; color:#a40000; background:#fff0f0; border:2px solid #a40000; padding:10px; border-radius:6px; }
-        @media (max-width: 520px) { .row { flex-direction: column; } }
-      `}</style>
     </div>
   );
 }
