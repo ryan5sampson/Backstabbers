@@ -253,16 +253,13 @@ export default function Speech() {
         <stop offset="1" stopColor="#b89654" />
       </linearGradient>
 
-      {/* A single leaf */}
       <symbol id="leaf" viewBox="0 0 20 20">
         <ellipse cx="10" cy="10" rx="9" ry="5" />
       </symbol>
     </defs>
 
-    {/* Center dot */}
     <circle cx="300" cy="15" r="3" fill="url(#laurelGold)" />
 
-    {/* Left branch (mirrored) */}
     <g fill="url(#laurelGold)" transform="translate(300,15) rotate(180)">
       <use href="#leaf" transform="translate(16,0) rotate(-22) scale(0.9,1)" />
       <use href="#leaf" transform="translate(40,0) rotate(-18) scale(0.9,1)" />
@@ -275,7 +272,6 @@ export default function Speech() {
       <use href="#leaf" transform="translate(208,0) rotate(-2)  scale(0.9,1)" />
     </g>
 
-    {/* Right branch */}
     <g fill="url(#laurelGold)" transform="translate(300,15)">
       <use href="#leaf" transform="translate(16,0) rotate(-22) scale(0.9,1)" />
       <use href="#leaf" transform="translate(40,0) rotate(-18) scale(0.9,1)" />
