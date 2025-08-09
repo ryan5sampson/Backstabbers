@@ -265,3 +265,17 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
 
 /* Topbar title (topic) matches setup page headline spacing */
 .title{ font-family: Cinzel, serif; letter-spacing:.06em; font-weight:800; }
+/* Laurel divider container */
+.laurelLine {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 12px;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.15));
+}
+
+/* Keep the SVG crisp but responsive */
+.laurelLine svg {
+  width: min(560px, 92%);
+  height: 26px;
+  display: block;
+}
