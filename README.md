@@ -9,3 +9,4 @@
 ## Deploy
 - Push to GitHub and “Import Project” on Vercel.
 - Add env var `OPENAI_API_KEY` in Vercel → Deploy.
+
