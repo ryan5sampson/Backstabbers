@@ -313,33 +313,36 @@ const { words, sentenceEnds, turnPoints } = useMemo(() => {
           <div className="progressInner" style={{ width: `${progress}%` }} />
         </div>
 
-        {!started ? (
-          <div className="center">
-            <button className="primary" onClick={onStart}>▶ Start Speech</button>
-          </div>
-        ) : (
-          <div className="teleWrap">
-            {/* Overlay that does NOT shift layout */}
-            {paused && revealed > 0 && revealed < totalWords && (
-              <div className="turnOverlay">
-                <div className="turnCard">
-                  <div className="turnText">TURN AROUND!</div>
-                  <button className="primary" onClick={onResume}>Resume</button>
-                </div>
-              </div>
-            )}
-
-            <div className="teleprompter">
-              {/* Render paragraphs for easier pickup after pauses */}
-              {paragraphs.length > 0 ? (
-                paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
-              ) : (
-                <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
-              )}
-            </div>
-          </div>
-        )}
+{!started ? (
+  <div className="center">
+    <button className="primary" onClick={onStart}>▶ Start Speech</button>
+  </div>
+) : revealed >= totalWords ? (
+  <div className="center" style={{ minHeight: "40vh" }}>
+    <h2 style={{ marginBottom: 8 }}>Congratulations, you Survived!</h2>
+    <button className="primary" onClick={onExit}>Back to Setup</button>
+  </div>
+) : (
+  <div className="teleWrap">
+    {/* Overlay pause */}
+    {paused && revealed > 0 && revealed < totalWords && (
+      <div className="turnOverlay">
+        <div className="turnCard">
+          <div className="turnText">TURN AROUND!</div>
+          <button className="primary" onClick={onResume}>Resume</button>
+        </div>
       </div>
+    )}
+
+    <div className="teleprompter">
+      {paragraphs.length > 0 ? (
+        paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
+      ) : (
+        <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
+      )}
+    </div>
+  </div>
+)}
 
       <style jsx>{`
         .page { min-height:100vh; display:grid; place-items:center; padding:16px; }
