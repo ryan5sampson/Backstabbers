@@ -54,3 +54,126 @@ input, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:
 .turnCard { text-align:center; padding:18px 22px; border:3px solid #c9a86b; border-radius:10px; background:#fffdf5; box-shadow:0 8px 20px rgba(0,0,0,0.15); }
 .turnText { color:#b00000; font-weight:900; font-size:2.2rem; margin-bottom:10px; }
 @media (max-width: 540px) { .turnText { font-size:1.8rem; } }
+/* ===== Roman theme + mobile tidy ===== */
+:root{
+  --parchment:#fff6dc;
+  --paper:#fffaf0;
+  --ink:#3b2a00;
+  --gold:#c9a86b;
+  --gold-dark:#a88846;
+  --olive:#6a8f3a;
+  --error:#a40000;
+}
+
+/* Soft parchment background */
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(201,168,107,.20), transparent 60%),
+    radial-gradient(1200px 600px at 50% 110%, rgba(201,168,107,.15), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0 2px, transparent 2px 4px),
+    var(--parchment);
+  color:var(--ink);
+}
+
+/* Card gets more Roman, tighter on mobile */
+.card{
+  background: var(--paper);
+  border: 6px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+  padding: 18px;
+}
+
+/* Title: bold, spaced, Roman vibes */
+.title{
+  font-family: Cinzel, serif;
+  letter-spacing: .06em;
+  text-align:center;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 6px 0 12px;
+}
+
+/* Field layout: labels above, consistent spacing */
+.card label{
+  display:block;
+  font-weight: 700;
+  margin: 10px 0 6px;
+}
+
+/* Make rows wrap nicely on mobile */
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Touch-friendly controls */
+input, select, button{
+  font-family: inherit;
+  font-size: 1.05rem;
+  padding: 12px 12px;
+  border-radius: 10px;
+}
+
+/* Inputs */
+input, select{
+  border: 2px solid var(--gold);
+  background: #fffef7;
+  color: var(--ink);
+  flex: 1 1 220px;           /* makes them wrap nicely on narrow screens */
+  min-width: 0;              /* prevents overflow */
+}
+
+/* Narrower number input so the label fits beside it */
+input[type="number"]{
+  flex: 0 0 90px;
+  text-align:center;
+}
+
+/* iOS number spinners off */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+input[type="number"]{ -moz-appearance: textfield; }
+
+/* Buttons */
+button{
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--gold-dark);
+  transition: transform .02s ease, box-shadow .15s ease, background .15s ease;
+}
+button:hover{ background: #d6b77d; }
+button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark); }
+
+/* Primary CTA spans full width on mobile, comfy on desktop */
+.btn.primary{
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Error box */
+.error{
+  color: var(--error);
+  border-color: var(--error);
+}
+
+/* Progress / teleprompter keep their theme */
+.progressOuter{ background:#e7dcc2; }
+.progressInner{ background: var(--olive); }
+
+/* Overlay cards (turns + finish) inherit Roman border */
+.turnCard{
+  border-color: var(--gold);
+}
+
+/* Small screens: tighten fonts & spacing */
+@media (max-width: 480px){
+  .title{ font-size: 1.55rem; letter-spacing:.05em; }
+  input, select, button{ font-size: 1rem; padding: 12px; }
+  .card{ padding: 14px; }
+  .row{ gap:8px; }
+}
