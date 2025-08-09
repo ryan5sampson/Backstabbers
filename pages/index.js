@@ -75,7 +75,7 @@ export default function Setup() {
   return (
     <div className="page">
       <div className="card">
-        <h1 className="title">⚔ AVE, POPVLVS ROMANVS! ⚔</h1>
+        <h1 className="title">⚔ ROMAN SPEECH GENERATOR ⚔</h1>
 
         <label>Speech Topic</label>
         <div className="row">
