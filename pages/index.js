@@ -10,18 +10,17 @@ const DEFAULT_TOPICS = [
   "Public bath renovations",
   "Chariot traffic laws"
 ];
+
+// Ensure "In conclusion" exists AND is ≥ 3 sentences before the end
 function ensureInConclusionBuffer(text) {
-  // Split into sentences, keeping punctuation
   const sentences = (text.match(/[^.!?]+[.!?]+(?:["')]+)?/g) || [text]).map(s => s.trim());
   let idx = sentences.findIndex(seg => /(^|\s)in conclusion\b/i.test(seg));
 
   if (idx === -1) {
-    // Append an "In conclusion," sentence if it's missing
     sentences.push("In conclusion, my fellow senators, heed me.");
     idx = sentences.length - 1;
   }
 
-  // Ensure at least 3 sentences AFTER the "in conclusion" sentence
   const remaining = sentences.length - idx - 1;
   const needed = Math.max(0, 3 - remaining);
   const closers = [
@@ -33,7 +32,6 @@ function ensureInConclusionBuffer(text) {
     sentences.push(closers[i] || "Let us see this business to its end.");
   }
 
-  // Light tidy
   return sentences.join(" ").replace(/\s+/g, " ").trim();
 }
 
@@ -45,56 +43,36 @@ export default function Setup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-async function handleGenerate() {
-  try {
-    setLoading(true);
-    setError("");
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic, senators, confidence })
-    });
-    const data = await res.json();
-    setLoading(false);
-    if (!res.ok || !data.speech) throw new Error(data.error || "Generation failed");
+  async function handleGenerate() {
+    try {
+      setLoading(true);
+      setError("");
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, senators, confidence })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.speech) throw new Error(data.error || "Generation failed");
 
-    // 1) Clean up model output
-    let s = (data.speech || "").replace(/\[FINISH\]\s*$/i, "").trim();
+      // Clean up & enforce "In conclusion" runway
+      let s = (data.speech || "").replace(/\[FINISH\]\s*$/i, "").trim();
+      s = ensureInConclusionBuffer(s);
 
-    // 2) Force "In conclusion" exists and is ≥ 3 sentences from the end.
-    s = ensureInConclusionBuffer(s);
-
-    // 3) Go to speech page
-    router.push({
-      pathname: "/speech",
-      query: {
-        speech: encodeURIComponent(s),
-        confidence,
-        senators: String(senators),
-        topic: encodeURIComponent(topic || "Address to the Senate")
-      }
-    });
-  } catch (e) {
-    setLoading(false);
-    setError(String(e.message || e));
-  }
-}
-
-// ...everything above unchanged...
-
-router.push({
-  pathname: "/speech",
-  query: {
-    speech: encodeURIComponent(s),
-    confidence,
-    senators: String(senators),
-    topic: encodeURIComponent(topic || "Address to the Senate")   // ← add this
-  }
-});
-
+      // Go to teleprompter page
+      router.push({
+        pathname: "/speech",
+        query: {
+          speech: encodeURIComponent(s),
+          confidence,
+          senators: String(senators),
+          topic: encodeURIComponent(topic || "Address to the Senate")
+        }
+      });
     } catch (e) {
-      setLoading(false);
       setError(String(e.message || e));
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -111,9 +89,14 @@ router.push({
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
           />
-          <button type="button" onClick={() =>
-            setTopic(DEFAULT_TOPICS[Math.floor(Math.random() * DEFAULT_TOPICS.length)])
-          }>Pick one</button>
+          <button
+            type="button"
+            onClick={() =>
+              setTopic(DEFAULT_TOPICS[Math.floor(Math.random() * DEFAULT_TOPICS.length)])
+            }
+          >
+            Pick one
+          </button>
         </div>
 
         <label>Number of senators (players)</label>
