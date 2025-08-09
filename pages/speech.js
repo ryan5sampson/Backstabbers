@@ -245,52 +245,47 @@ export default function Speech() {
             <div className="hint">Changes apply to the next run. Press Start again to test.</div>
           </div>
         )}
-{/* Laurel divider (decorative) */}
 <div className="laurelLine" aria-hidden="true">
   <svg viewBox="0 0 600 30" preserveAspectRatio="xMidYMid meet" role="img" aria-label="laurel divider">
     <defs>
       <linearGradient id="laurelGold" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stopColor="#e5d29a"/>
-        <stop offset="1" stopColor="#b89654"/>
+        <stop offset="0" stopColor="#e5d29a" />
+        <stop offset="1" stopColor="#b89654" />
       </linearGradient>
 
-      <!-- A single leaf -->
+      {/* A single leaf */}
       <symbol id="leaf" viewBox="0 0 20 20">
         <ellipse cx="10" cy="10" rx="9" ry="5" />
       </symbol>
     </defs>
 
-    <!-- Center dot -->
+    {/* Center dot */}
     <circle cx="300" cy="15" r="3" fill="url(#laurelGold)" />
 
-    <!-- Left branch (leaves angled up) -->
+    {/* Left branch (mirrored) */}
     <g fill="url(#laurelGold)" transform="translate(300,15) rotate(180)">
-      <g transform="translate(0,0)">
-        <use href="#leaf" transform="translate(16,0) rotate(-22) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(40,0) rotate(-18) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(64,0) rotate(-15) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(88,0) rotate(-12) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(112,0) rotate(-10) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(136,0) rotate(-8)  scale(0.9,1)" />
-        <use href="#leaf" transform="translate(160,0) rotate(-6)  scale(0.9,1)" />
-        <use href="#leaf" transform="translate(184,0) rotate(-4)  scale(0.9,1)" />
-        <use href="#leaf" transform="translate(208,0) rotate(-2)  scale(0.9,1)" />
-      </g>
+      <use href="#leaf" transform="translate(16,0) rotate(-22) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(40,0) rotate(-18) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(64,0) rotate(-15) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(88,0) rotate(-12) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(112,0) rotate(-10) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(136,0) rotate(-8)  scale(0.9,1)" />
+      <use href="#leaf" transform="translate(160,0) rotate(-6)  scale(0.9,1)" />
+      <use href="#leaf" transform="translate(184,0) rotate(-4)  scale(0.9,1)" />
+      <use href="#leaf" transform="translate(208,0) rotate(-2)  scale(0.9,1)" />
     </g>
 
-    <!-- Right branch (mirror) -->
+    {/* Right branch */}
     <g fill="url(#laurelGold)" transform="translate(300,15)">
-      <g transform="translate(0,0)">
-        <use href="#leaf" transform="translate(16,0) rotate(-22) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(40,0) rotate(-18) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(64,0) rotate(-15) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(88,0) rotate(-12) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(112,0) rotate(-10) scale(0.9,1)" />
-        <use href="#leaf" transform="translate(136,0) rotate(-8)  scale(0.9,1)" />
-        <use href="#leaf" transform="translate(160,0) rotate(-6)  scale(0.9,1)" />
-        <use href="#leaf" transform="translate(184,0) rotate(-4)  scale(0.9,1)" />
-        <use href="#leaf" transform="translate(208,0) rotate(-2)  scale(0.9,1)" />
-      </g>
+      <use href="#leaf" transform="translate(16,0) rotate(-22) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(40,0) rotate(-18) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(64,0) rotate(-15) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(88,0) rotate(-12) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(112,0) rotate(-10) scale(0.9,1)" />
+      <use href="#leaf" transform="translate(136,0) rotate(-8)  scale(0.9,1)" />
+      <use href="#leaf" transform="translate(160,0) rotate(-6)  scale(0.9,1)" />
+      <use href="#leaf" transform="translate(184,0) rotate(-4)  scale(0.9,1)" />
+      <use href="#leaf" transform="translate(208,0) rotate(-2)  scale(0.9,1)" />
     </g>
   </svg>
 </div>
