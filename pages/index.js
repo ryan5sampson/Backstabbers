@@ -7,7 +7,6 @@ const DEFAULT_TOPICS = [
   "Why I, Julius Caesar, cannot possibly be killed—and why my dear friends would never betray me"
 ];
 
-
 // Ensure "In conclusion" exists AND is ≥ 3 sentences before the end
 function ensureInConclusionBuffer(text) {
   const sentences = (text.match(/[^.!?]+[.!?]+(?:["')]+)?/g) || [text]).map(s => s.trim());
@@ -63,7 +62,7 @@ export default function Setup() {
           speech: encodeURIComponent(s),
           confidence,
           senators: String(senators),
-          topic: encodeURIComponent(topic || "Address to the Senate")
+          topic: encodeURIComponent(topic || "Address to the Roman People")
         }
       });
     } catch (e) {
@@ -76,13 +75,13 @@ export default function Setup() {
   return (
     <div className="page">
       <div className="card">
-        <h1 className="title">⚔ AVE, SENATOR! ⚔</h1>
+        <h1 className="title">⚔ AVE, POPVLVS ROMANVS! ⚔</h1>
 
         <label>Speech Topic</label>
         <div className="row">
           <input
             type="text"
-            placeholder="Bread & Circuses"
+            placeholder="Caesar salads, anyone?"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
           />
