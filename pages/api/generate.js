@@ -4,71 +4,49 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// In-memory cache
-let speechCache = {};
+// Store speeches in-memory for prototype
+// (will reset every time server restarts — fine for now)
+let savedSpeeches = [];
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { topic, senators, confidence } = req.body;
+  const { topic, senators, confidence } = req.body || {};
 
-  // 1. If we already have this speech, return it
-  if (speechCache[topic]) {
-    return res.status(200).json(speechCache[topic]);
+  // Fallback: no topic? Return a saved speech if available
+  if (!topic && savedSpeeches.length > 0) {
+    const randomSpeech = savedSpeeches[Math.floor(Math.random() * savedSpeeches.length)];
+    return res.status(200).json({
+      speech: randomSpeech,
+      wpm: confidence === "low" ? 100 : confidence === "medium" ? 130 : 150
+    });
   }
 
   try {
-    const prompt = `
-You are an ancient Roman senator giving a dramatic speech on the topic: "${topic}".
-The speech should be lively, persuasive, and humorous.
-There are ${senators} players.
-Confidence level: ${confidence}.
-Mark points in the speech where the speaker should pause and turn dramatically
-by writing "[TURN]" on its own line.
-    `;
+    // Use GPT-4o-mini to save tokens
+    const prompt = `Write a persuasive Roman Senate speech on the topic "${topic}" for ${senators} senators listening. Confidence level: ${confidence}. Keep it under 200 words.`;
 
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini", // switched to cheaper model
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 500
+      temperature: 0.8
     });
 
-    const text = completion.choices[0].message.content || "";
-    const cleaned = text.replace(/\[FINISH\]\s*$/i, "").trim();
+    const speech = completion.choices[0]?.message?.content?.trim();
 
-    // Determine turn points
-    const words = cleaned.split(/\s+/);
-    const turnPoints = [];
-    words.forEach((w, i) => {
-      if (w.includes("[TURN]")) {
-        turnPoints.push(i);
-      }
-    });
-
-    const result = {
-      speech: cleaned.replace(/\[TURN\]/g, ""),
-      turnPoints,
-      wpm: 130
-    };
-
-    // Save in cache
-    speechCache[topic] = result;
-
-    return res.status(200).json(result);
-
-  } catch (err) {
-    console.error("Error generating speech:", err.message);
-
-    // 2. Fallback: return random cached speech if available
-    const topics = Object.keys(speechCache);
-    if (topics.length > 0) {
-      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-      return res.status(200).json(speechCache[randomTopic]);
+    if (speech) {
+      savedSpeeches.push(speech); // store for fallback
+      if (savedSpeeches.length > 10) savedSpeeches.shift(); // keep only 10 most recent
     }
 
-    // 3. If no cache yet, hard fail
-    return res.status(500).json({ error: "Failed to generate and no fallback available" });
+    return res.status(200).json({
+      speech,
+      wpm: confidence === "low" ? 100 : confidence === "medium" ? 130 : 150
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message || "Something went wrong" });
   }
 }
