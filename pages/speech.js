@@ -23,6 +23,8 @@ export default function Speech() {
   );
   const [granularity, setGranularity] = useState("sentence"); // "sentence" | "phrase" | "word"
   const [showSettings, setShowSettings] = useState(false);
+const [finished, setFinished] = useState(false);
+const [finishOverlay, setFinishOverlay] = useState(false);
 
   // Playback state
   const [started, setStarted] = useState(false);
@@ -131,19 +133,29 @@ export default function Speech() {
   const progress = totalWords ? Math.min(100, (revealed / totalWords) * 100) : 0;
 
   // Word-by-word reveal. Pause 800ms after a turn word.
-  useEffect(() => {
-    if (!started || paused || !totalWords) return;
+useEffect(() => {
+  if (!started || paused || !totalWords || finished) return;
 
-    if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
-      clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => setPaused(true), 800);
-      return;
-    }
+  // Pause shortly after a turn point so the last word is visible
+  if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setPaused(true), 800);
+    return;
+  }
 
-    const delay = 60000 / Math.max(60, Number(wpm) || 125);
-    timerRef.current = setTimeout(() => setRevealed(n => n + 1), delay);
-    return () => clearTimeout(timerRef.current);
-  }, [started, paused, revealed, turnIndex, turnPoints, totalWords, wpm]);
+  // End-of-speech: wait a moment, then show finish overlay
+  if (revealed >= totalWords) {
+    setFinished(true);
+    // short grace so last word lands before overlay
+    timerRef.current = setTimeout(() => setFinishOverlay(true), 900);
+    return;
+  }
+
+  const delay = 60000 / Math.max(60, Number(wpm) || 125);
+  timerRef.current = setTimeout(() => setRevealed(n => n + 1), delay);
+  return () => clearTimeout(timerRef.current);
+}, [started, paused, revealed, turnIndex, turnPoints, totalWords, wpm, finished]);
+
 
   // Controls
   function onStart() {
@@ -212,23 +224,42 @@ export default function Speech() {
 
         <div className="progressOuter"><div className="progressInner" style={{ width: `${progress}%` }} /></div>
 
-        {!started ? (
-          <div className="center"><button className="btn primary" onClick={onStart}>▶ Start Speech</button></div>
-        ) : revealed >= totalWords ? (
-          <div className="center finish">
-            <h2>Congratulations, you Survived!</h2>
-            <button className="btn primary" onClick={onExit}>Back to Setup</button>
-          </div>
-        ) : (
-          <div className="teleWrap">
-            {paused && revealed > 0 && revealed < totalWords && (
-              <div className="turnOverlay">
-                <div className="turnCard">
-                  <div className="turnText">TURN AROUND!</div>
-                  <button className="btn primary" onClick={onResume}>Resume</button>
-                </div>
-              </div>
-            )}
+{!started ? (
+  <div className="center">
+    <button className="btn primary" onClick={onStart}>▶ Start Speech</button>
+  </div>
+) : (
+  <div className="teleWrap">
+    {/* TURN overlay */}
+    {paused && !finished && revealed > 0 && revealed < totalWords && (
+      <div className="turnOverlay">
+        <div className="turnCard">
+          <div className="turnText">TURN AROUND!</div>
+          <button className="btn primary" onClick={onResume}>Resume</button>
+        </div>
+      </div>
+    )}
+
+    {/* FINISH overlay */}
+    {finishOverlay && (
+      <div className="turnOverlay">
+        <div className="turnCard">
+          <div className="turnText">Congratulations, you Survived!</div>
+          <button className="btn primary" onClick={onExit}>Back to Setup</button>
+        </div>
+      </div>
+    )}
+
+    <div className="teleprompter">
+      {paragraphs.length > 0 ? (
+        paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
+      ) : (
+        <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
+      )}
+    </div>
+  </div>
+)}
+
 
             <div className="teleprompter">
               {paragraphs.length > 0 ? (
