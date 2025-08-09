@@ -1,0 +1,18 @@
+/* simple, valid CSS */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Times New Roman", serif; background: #fff8dc; color: #4a2e00; }
+h1 { text-align: center; margin: 1rem 0; }
+.page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.panel { width: 100%; max-width: 760px; background: #fffdf5; border: 6px solid #c9a86b; border-radius: 12px; padding: 24px; }
+.title { font-size: 2rem; font-family: Cinzel, serif; }
+.form { display: grid; gap: 12px; margin-bottom: 16px; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+input, select { padding: 10px; border: 2px solid #c9a86b; border-radius: 6px; background: #fffdf5; }
+button { background: #c9a86b; color: #3b2a00; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+.error { color: #a40000; background: #fff0f0; border: 2px solid #a40000; padding: 10px; border-radius: 6px; margin-top: 8px; }
+.teleprompter { margin-top: 16px; border: 3px solid #c9a86b; border-radius: 10px; background: #fffdf5; padding: 16px; }
+.scrollbox { min-height: 160px; }
+.speech { margin: 0; font-size: 1.2rem; line-height: 1.55; }
+.turnBlock { margin-top: 16px; text-align: center; }
+.turnText { color: #b00000; font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
+.footerNote { opacity: 0.75; margin-top: 8px; font-size: 0.9rem; }
