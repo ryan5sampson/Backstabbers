@@ -1,52 +1,91 @@
 import OpenAI from "openai";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Store speeches in-memory for prototype
-// (will reset every time server restarts — fine for now)
+// In-memory cache
 let savedSpeeches = [];
+
+// Funny default prompts if no topic is provided
+const FUNNY_DEFAULTS = [
+  "The glorious invention of Caesar salads—even though they are suspiciously modern",
+  "My vision that a distant nation will think about Rome at least once each week",
+  "How I cannot possibly be killed, and how my beloved friends would never betray me"
+];
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { topic, senators, confidence } = req.body || {};
+  let { topic, senators, confidence } = req.body || {};
+  topic = (topic || "").trim();
 
-  // Fallback: no topic? Return a saved speech if available
-  if (!topic && savedSpeeches.length > 0) {
-    const randomSpeech = savedSpeeches[Math.floor(Math.random() * savedSpeeches.length)];
-    return res.status(200).json({
-      speech: randomSpeech,
-      wpm: confidence === "low" ? 100 : confidence === "medium" ? 130 : 150
-    });
+  // If no topic, pick from our funny defaults—and also check cache first
+  if (!topic) {
+    // If we have cached speeches, serve one randomly (free)
+    if (savedSpeeches.length > 0) {
+      const pick = savedSpeeches[Math.floor(Math.random() * savedSpeeches.length)];
+      return res.status(200).json({ speech: pick, wpm: pickWpm(confidence) });
+    }
+    topic = FUNNY_DEFAULTS[Math.floor(Math.random() * FUNNY_DEFAULTS.length)];
+  }
+
+  // If cached exact topic, return it
+  const cached = savedSpeeches.find(s => s.__topic === topic);
+  if (cached) {
+    return res.status(200).json({ speech: cached.text, wpm: pickWpm(confidence) });
   }
 
   try {
-    // Use GPT-4o-mini to save tokens
-    const prompt = `Write a persuasive Roman Senate speech on the topic "${topic}" for ${senators} senators listening. Confidence level: ${confidence}. Keep it under 200 words.`;
+    const prompt = [
+      `Write a comedic speech as if JULIUS CAESAR is addressing the ROMAN PEOPLE (not the Senate).`,
+      `Topic: "${topic}".`,
+      `Tone: bombastic oratory + modern asides; playful; PG‑13; witty callbacks; avoid copying any specific copyrighted text.`,
+      `Voice: confident, theatrical, self‑aggrandizing, with occasional jabs at senators and rival generals.`,
+      `Audience cues: brief stage directions like [PAUSE] are okay, but do NOT include "[TURN]"`,
+      `Pacing: short to medium sentences; vivid imagery; Roman references (aqueducts, legions, augurs, SPQR, laurel wreaths).`,
+      `Close with a paragraph that begins with "In conclusion," (exact phrase) and then 2–4 more sentences. Do NOT end immediately after "In conclusion,"`,
+      `Length: about 60–120 seconds spoken (roughly 130–250 words).`,
+      `End with [FINISH].`
+    ].join('\n');
 
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.8
+      temperature: 0.9,
+      max_tokens: 512
     });
 
-    const speech = completion.choices[0]?.message?.content?.trim();
+    let text = completion.choices?.[0]?.message?.content?.trim() || "";
+    text = text.replace(/\[FINISH\]\s*$/i, "").trim();
 
-    if (speech) {
-      savedSpeeches.push(speech); // store for fallback
-      if (savedSpeeches.length > 10) savedSpeeches.shift(); // keep only 10 most recent
-    }
+    // Save to cache with topic for future free pulls
+    savedSpeeches.unshift({ __topic: topic, text });
+    if (savedSpeeches.length > 12) savedSpeeches.pop();
 
-    return res.status(200).json({
-      speech,
-      wpm: confidence === "low" ? 100 : confidence === "medium" ? 130 : 150
-    });
+    return res.status(200).json({ speech: text, wpm: pickWpm(confidence) });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: err.message || "Something went wrong" });
+    console.error("OpenAI error:", err?.message || err);
+
+    // Fallback if quota/exceptions
+    const fallback = makeFallback(topic);
+    savedSpeeches.unshift({ __topic: topic, text: fallback });
+    if (savedSpeeches.length > 12) savedSpeeches.pop();
+
+    return res.status(200).json({ speech: fallback, wpm: pickWpm(confidence), _note: "FALLBACK" });
   }
+}
+
+function pickWpm(confidence) {
+  if (confidence === "low") return 110;
+  if (confidence === "high") return 140;
+  return 125;
+}
+
+function makeFallback(topic) {
+  return `People of Rome! I come not to mumble, but to thunder about ${topic}.
+[PAUSE]
+Behold our aqueducts, our legions, our suspiciously crunchy croutons—proof that destiny favors the bold!
+[PAUSE]
+In conclusion, my fellow Romans, raise your laurel wreaths, hold your dagg—decorative letter openers—and let history remember this day for laughter and triumph.`;
 }
