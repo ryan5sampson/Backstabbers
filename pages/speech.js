@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 // Defaults (used to prefill the Settings panel)
-const DEFAULT_WPM = { low: 110, medium: 125, high: 140 };
+const DEFAULT_WPM = { low: 200, medium: 200, high: 200 };
 const DEFAULT_MEAN_SENT_PER_TURN = { low: 1, medium: 2, high: 3 }; // avg sentences per turn
 
 export default function Speech() {
@@ -15,9 +15,11 @@ export default function Speech() {
 
   const title = decodeURIComponent(encodedTopic || "Address to the Roman People");
   const rawSpeech = decodeURIComponent(encoded || "");
+  const teleRef = useRef(null);
+
 
   // ----- SETTINGS (live adjustable) -----
-  const [wpm, setWpm] = useState(DEFAULT_WPM[confidence] ?? 125);
+  const [wpm, setWpm] = useState(DEFAULT_WPM[confidence] ?? 200);
   const [meanSentencesPerTurn, setMeanSentencesPerTurn] = useState(
     DEFAULT_MEAN_SENT_PER_TURN[confidence] ?? 2
   );
@@ -134,11 +136,19 @@ export default function Speech() {
 
   // Progress
   const totalWords = pre.words.length;
-  const progress = totalWords ? Math.min(100, (revealed / totalWords) * 100) : 0;
+  const progress = totalWords ? Math.min(100, (ed / totalWords) * 100) : 0;
 
   // Word-by-word reveal. Pause 800ms after a turn word. Delay finish overlay a tad.
   useEffect(() => {
     if (!started || paused || !totalWords || finished) return;
+useEffect(() => {
+  if (!started || !teleRef.current) return;
+  // Keep the latest line in view
+  teleRef.current.scrollTo({
+    top: teleRef.current.scrollHeight,
+    behavior: "smooth"
+  });
+}, [revealed, paragraphs, started]);
 
     // pause shortly after a turn point so last word is readable
     if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
@@ -315,13 +325,14 @@ export default function Speech() {
               </div>
             ) : null}
 
-            <div className="teleprompter">
-              {paragraphs.length > 0 ? (
-                paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
-              ) : (
-                <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
-              )}
-            </div>
+<div className="teleprompter" ref={teleRef}>
+  {paragraphs.length > 0 ? (
+    paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
+  ) : (
+    <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
+  )}
+</div>
+
           </div>
         )}
       </div>
