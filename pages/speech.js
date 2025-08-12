@@ -136,19 +136,8 @@ export default function Speech() {
 
   // Progress
   const totalWords = pre.words.length;
-  const progress = totalWords ? Math.min(100, (ed / totalWords) * 100) : 0;
+  const progress = totalWords ? Math.min(100, (revealed / totalWords) * 100) : 0;
 
-  // Word-by-word reveal. Pause 800ms after a turn word. Delay finish overlay a tad.
-  useEffect(() => {
-    if (!started || paused || !totalWords || finished) return;
-useEffect(() => {
-  if (!started || !teleRef.current) return;
-  // Keep the latest line in view
-  teleRef.current.scrollTo({
-    top: teleRef.current.scrollHeight,
-    behavior: "smooth"
-  });
-}, [revealed, paragraphs, started]);
 
     // pause shortly after a turn point so last word is readable
     if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
@@ -163,6 +152,21 @@ useEffect(() => {
       timerRef.current = setTimeout(() => setFinishOverlay(true), 900);
       return;
     }
+  
+useEffect(() => {
+  const block = paused || finishOverlay;
+  if (block) document.body.classList.add("modal-open");
+  else document.body.classList.remove("modal-open");
+  return () => document.body.classList.remove("modal-open");
+}, [paused, finishOverlay]);
+  
+useEffect(() => {
+  if (!started || !teleRef.current) return;
+  teleRef.current.scrollTo({
+    top: teleRef.current.scrollHeight,
+    behavior: "smooth"
+  });
+}, [revealed, paragraphs, started]);
 
     const delay = 60000 / Math.max(60, Number(wpm) || 125);
     timerRef.current = setTimeout(() => setRevealed(n => n + 1), delay);
