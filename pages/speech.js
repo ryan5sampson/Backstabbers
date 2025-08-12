@@ -134,44 +134,49 @@ export default function Speech() {
     return points;
   }, [pre, confidence, granularity, meanSentencesPerTurn]);
 
-  // Progress
-  const totalWords = pre.words.length;
-  const progress = totalWords ? Math.min(100, (revealed / totalWords) * 100) : 0;
+// Progress
+const totalWords = pre.words.length;
+const progress = totalWords ? Math.min(100, (revealed / totalWords) * 100) : 0;
 
+// Word-by-word reveal. Pause 800ms after a turn word. Delay finish overlay a tad.
+useEffect(() => {
+  if (!started || paused || !totalWords || finished) return;
 
-    // pause shortly after a turn point so last word is readable
-    if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
-      clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => setPaused(true), 800);
-      return;
-    }
+  // pause shortly after a turn point so last word is readable
+  if (turnIndex < turnPoints.length && revealed === turnPoints[turnIndex]) {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setPaused(true), 800);
+    return;
+  }
 
-    // end of speech → mark finished and show overlay after a short grace
-    if (revealed >= totalWords) {
-      setFinished(true);
-      timerRef.current = setTimeout(() => setFinishOverlay(true), 900);
-      return;
-    }
-  
+  // end of speech → mark finished and show overlay after a short grace
+  if (revealed >= totalWords) {
+    setFinished(true);
+    timerRef.current = setTimeout(() => setFinishOverlay(true), 900);
+    return;
+  }
+
+  const delay = 60000 / Math.max(60, Number(wpm) || 125);
+  timerRef.current = setTimeout(() => setRevealed((n) => n + 1), delay);
+  return () => clearTimeout(timerRef.current);
+}, [started, paused, revealed, turnIndex, turnPoints, totalWords, wpm, finished]);
+
+// Auto-scroll the teleprompter pane as words reveal
+useEffect(() => {
+  if (!started || !teleRef.current) return;
+  teleRef.current.scrollTo({
+    top: teleRef.current.scrollHeight,
+    behavior: "smooth",
+  });
+}, [revealed, paragraphs, started]);
+
+// Optional: lock page scroll while overlays are visible
 useEffect(() => {
   const block = paused || finishOverlay;
   if (block) document.body.classList.add("modal-open");
   else document.body.classList.remove("modal-open");
   return () => document.body.classList.remove("modal-open");
 }, [paused, finishOverlay]);
-  
-useEffect(() => {
-  if (!started || !teleRef.current) return;
-  teleRef.current.scrollTo({
-    top: teleRef.current.scrollHeight,
-    behavior: "smooth"
-  });
-}, [revealed, paragraphs, started]);
-
-    const delay = 60000 / Math.max(60, Number(wpm) || 125);
-    timerRef.current = setTimeout(() => setRevealed(n => n + 1), delay);
-    return () => clearTimeout(timerRef.current);
-  }, [started, paused, revealed, turnIndex, turnPoints, totalWords, wpm, finished]);
 
   // Controls
   function onStart() {
