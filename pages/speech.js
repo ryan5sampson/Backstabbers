@@ -133,6 +133,24 @@ export default function Speech() {
 
     return points;
   }, [pre, confidence, granularity, meanSentencesPerTurn]);
+  
+// Build paragraphs from paragraphBreaks
+const paragraphs = useMemo(() => {
+  if (!pre.words.length) return [];
+  const breaks = paragraphBreaks.slice();
+  if (breaks[breaks.length - 1] !== revealed && revealed > 0) breaks.push(revealed);
+
+  const parts = [];
+  let prev = 0;
+  for (const b of breaks) {
+    if (b > prev) parts.push(pre.words.slice(prev, b).join(" "));
+    prev = b;
+  }
+  if (parts.length === 0 && revealed > 0) {
+    parts.push(pre.words.slice(0, revealed).join(" "));
+  }
+  return parts;
+}, [paragraphBreaks, revealed, pre.words]);
 
 // Progress
 const totalWords = pre.words.length;
@@ -198,23 +216,6 @@ useEffect(() => {
     router.push("/");
   }
 
-  // Build paragraphs from paragraphBreaks
-  const paragraphs = useMemo(() => {
-    if (!totalWords) return [];
-    const breaks = paragraphBreaks.slice();
-    if (breaks[breaks.length - 1] !== revealed && revealed > 0) breaks.push(revealed);
-
-    const parts = [];
-    let prev = 0;
-    for (const b of breaks) {
-      if (b > prev) parts.push(pre.words.slice(prev, b).join(" "));
-      prev = b;
-    }
-    if (parts.length === 0 && revealed > 0) {
-      parts.push(pre.words.slice(0, revealed).join(" "));
-    }
-    return parts;
-  }, [paragraphBreaks, revealed, pre.words, totalWords]);
 
   return (
     <div className="page">
