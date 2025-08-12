@@ -2,6 +2,272 @@
 * { box-sizing: border-box; }
 body { margin: 0; font-family: "Times New Roman", serif; background: #fff8dc; color: #4a2e00; }
 h1 { text-align: center; margin: 1rem 0; }
+.panel { width: 100%; max-width: 760px; background: #fffdf5; border: 6px solid #c9a86b; border-radius: 12px; padding: 24px; }
+.form { display: grid; gap: 12px; margin-bottom: 16px; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+input, select { padding: 10px; border: 2px solid #c9a86b; border-radius: 6px; background: #fffdf5; }
+button { background: #c9a86b; color: #3b2a00; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+.error { color: #a40000; background: #fff0f0; border: 2px solid #a40000; padding: 10px; border-radius: 6px; margin-top: 8px; }
+.scrollbox { min-height: 160px; }
+.speech { margin: 0; font-size: 1.2rem; line-height: 1.55; }
+.turnBlock { margin-top: 16px; text-align: center; }
+.turnText { color: #b00000; font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
+.footerNote { opacity: 0.75; margin-top: 8px; font-size: 0.9rem; }
+/* Layout & cards */
+.page { min-height: 100vh; display: grid; place-items: center; padding: 16px; font-family: Cinzel, serif; }
+.card { width: 100%; max-width: 1000px; background:#fffdf5; border:6px solid #c9a86b; border-radius:12px; padding:16px; }
+.title { font-weight: 800; text-align: center; margin: 0 0 8px; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+
+.row { display:flex; gap:8px; }
+@media (max-width: 520px){ .row { flex-direction: column; } }
+
+input, select, button { padding:10px; font-size:1rem; }
+input, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:#fffef7; }
+.btn { background:#c9a86b; color:#3b2a00; border:none; border-radius:6px; cursor:pointer; font-weight:700; }
+.btn.primary { width:100%; margin-top:8px; }
+.error { margin-top:10px; color:#a40000; background:#fff0f0; border:2px solid #a40000; padding:10px; border-radius:6px; }
+
+.settings { margin-top:10px; padding:12px; border:2px solid #e4d6aa; border-radius:8px; background:#fffef9; }
+.settings .row { display:flex; align-items:center; gap:10px; margin:8px 0; }
+.settings label { min-width:200px; }
+.hint { font-size:.9rem; opacity:.8; margin-top:4px; }
+@media (max-width: 540px) { .settings label { min-width:140px; } }
+
+.progressOuter { height:12px; background:#ddd; border-radius:6px; overflow:hidden; margin-top:8px; }
+.progressInner { height:100%; background:#6c0; transition:width .15s ease; }
+
+.center { display:grid; place-items:center; padding:14px; }
+.finish { min-height: 40vh; }
+
+.ghost { background:transparent; border:none; color:#3b2a00; font-weight:700; cursor:pointer; }
+
+.teleWrap { position:relative; margin-top:16px; }
+.teleprompter { padding:18px; background:#fffef9; border:2px solid #e4d6aa; border-radius:8px; min-height:40vh; }
+.speech { margin:0 0 1rem 0; text-align:left; line-height:1.7; font-size:1.6rem; }
+@media (max-width: 540px) { .speech { font-size:1.35rem; line-height:1.6; } }
+
+.turnCard { text-align:center; padding:18px 22px; border:3px solid #c9a86b; border-radius:10px; background:#fffdf5; box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+.turnText { color:#b00000; font-weight:900; font-size:2.2rem; margin-bottom:10px; }
+@media (max-width: 540px) { .turnText { font-size:1.8rem; } }
+/* ===== Roman theme + mobile tidy ===== */
+:root{
+  --parchment:#fff6dc;
+  --paper:#fffaf0;
+  --ink:#3b2a00;
+  --gold:#c9a86b;
+  --gold-dark:#a88846;
+  --olive:#6a8f3a;
+  --error:#a40000;
+}
+
+/* Soft parchment background */
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(201,168,107,.20), transparent 60%),
+    radial-gradient(1200px 600px at 50% 110%, rgba(201,168,107,.15), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0 2px, transparent 2px 4px),
+    var(--parchment);
+  color:var(--ink);
+}
+
+/* Card gets more Roman, tighter on mobile */
+.card{
+  background: var(--paper);
+  border: 6px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+  padding: 18px;
+}
+
+/* Title: bold, spaced, Roman vibes */
+.title{
+  font-family: Cinzel, serif;
+  letter-spacing: .06em;
+  text-align:center;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 6px 0 12px;
+}
+
+/* Field layout: labels above, consistent spacing */
+.card label{
+  display:block;
+  font-weight: 700;
+  margin: 10px 0 6px;
+}
+
+/* Make rows wrap nicely on mobile */
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Touch-friendly controls */
+input, select, button{
+  font-family: inherit;
+  font-size: 1.05rem;
+  padding: 12px 12px;
+  border-radius: 10px;
+}
+
+/* Inputs */
+input, select{
+  border: 2px solid var(--gold);
+  background: #fffef7;
+  color: var(--ink);
+  flex: 1 1 220px;           /* makes them wrap nicely on narrow screens */
+  min-width: 0;              /* prevents overflow */
+}
+
+/* Narrower number input so the label fits beside it */
+input[type="number"]{
+  flex: 0 0 90px;
+  text-align:center;
+}
+
+/* iOS number spinners off */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+input[type="number"]{ -moz-appearance: textfield; }
+
+/* Buttons */
+button{
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--gold-dark);
+  transition: transform .02s ease, box-shadow .15s ease, background .15s ease;
+}
+button:hover{ background: #d6b77d; }
+button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark); }
+
+/* Primary CTA spans full width on mobile, comfy on desktop */
+.btn.primary{
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Error box */
+.error{
+  color: var(--error);
+  border-color: var(--error);
+}
+
+/* Progress / teleprompter keep their theme */
+.progressOuter{ background:#e7dcc2; }
+.progressInner{ background: var(--olive); }
+
+/* Overlay cards (turns + finish) inherit Roman border */
+.turnCard{
+  border-color: var(--gold);
+}
+
+/* Small screens: tighten fonts & spacing */
+@media (max-width: 480px){
+  .title{ font-size: 1.55rem; letter-spacing:.05em; }
+  input, select, button{ font-size: 1rem; padding: 12px; }
+  .card{ padding: 14px; }
+  .row{ gap:8px; }
+}
+/* === Teleprompter Roman theme === */
+
+/* Match setup page background already set in body */
+
+/* Card polish (speech page uses same .card) */
+.card{
+  background: var(--paper);
+  border: 6px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+}
+
+/* Progress: olive bar, subtle frame */
+.progressOuter{ background:#e7dcc2; border:2px solid #d2c29b; }
+.progressInner{ background: var(--olive); }
+
+/* Teleprompter parchment pane */
+.teleWrap{ position:relative; margin-top:16px; }
+.teleprompter{
+  padding: 22px;
+  background:
+    linear-gradient(transparent 31px, rgba(0,0,0,0.04) 32px) 0 0/100% 34px, /* faint writing lines */
+    #fffef4;
+  border: 2px solid #e4d6aa;
+  border-radius: 10px;
+  min-height: 48vh;
+}
+
+/* Readability */
+.speech{
+  margin: 0 0 1.1rem 0;
+  text-align: left;
+  line-height: 1.75;
+  font-size: 1.8rem;                /* bigger by default */
+  max-width: 68ch;                  /* sensible line length */
+}
+@media (max-width: 540px){
+  .speech{ font-size: 1.5rem; line-height: 1.65; }
+}
+
+/* Overlays: turn + finish share look, with gentle fade-in */
+.turnOverlay{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(255,248,220,0.85);
+  z-index:10;
+  animation: fadeIn .18s ease-out;
+}
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+.turnCard{
+  text-align:center;
+  padding: 20px 24px;
+  border: 3px solid var(--gold);
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: 0 10px 22px rgba(0,0,0,.16);
+}
+
+/* Overlay headline */
+.turnText{
+  color:#b00000;
+  font-weight:900;
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 0 #fff;
+}
+@media (max-width:540px){ .turnText{ font-size:1.8rem; } }
+
+/* Buttons keep Roman style */
+.btn{ background: var(--gold); color: var(--ink); border:none; border-radius:10px; font-weight:800; cursor:pointer; box-shadow:0 2px 0 var(--gold-dark); }
+.btn.primary{ padding:12px 16px; }
+.btn:hover{ background:#d6b77d; }
+.btn:active{ transform: translateY(1px); box-shadow:0 1px 0 var(--gold-dark); }
+
+/* Topbar title (topic) matches setup page headline spacing */
+.title{ font-family: Cinzel, serif; letter-spacing:.06em; font-weight:800; }
+/* Laurel divider container */
+.laurelLine {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 12px;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.15));
+}
+
+/* Keep the SVG crisp but responsive */
+.laurelLine svg {
+  width: min(560px, 92%);
+  height: 26px;
+  display: block;
+}
+/* simple, valid CSS */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Times New Roman", serif; background: #fff8dc; color: #4a2e00; }
+h1 { text-align: center; margin: 1rem 0; }
 .page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
 .panel { width: 100%; max-width: 760px; background: #fffdf5; border: 6px solid #c9a86b; border-radius: 12px; padding: 24px; }
 .title { font-size: 2rem; font-family: Cinzel, serif; }
@@ -308,9 +574,32 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
 body.modal-open {
   overflow: hidden;
 }
-useEffect(() => {
-  const block = paused || finishOverlay;
-  if (block) document.body.classList.add("modal-open");
-  else document.body.classList.remove("modal-open");
-  return () => document.body.classList.remove("modal-open");
-}, [paused, finishOverlay]);
+/* Keep progress bar visible while the teleprompter scrolls */
+.progressOuter{
+  position: sticky;
+  top: 8px;         /* adjust if you want it tighter under the laurel/title */
+  z-index: 20;
+}
+
+/* Teleprompter scroll area: fixed height and smooth scroll */
+.teleprompter{
+  max-height: 60vh;   /* keeps content within the viewport */
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Center overlays on the screen (TURN/Finish) */
+.turnOverlay{
+  position: fixed;    /* viewport-centered, not inside the text box */
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,248,220,0.85);
+  z-index: 1000;
+}
+
+/* Prevent background page scroll while an overlay is open */
+body.modal-open{
+  overflow: hidden;
+}
