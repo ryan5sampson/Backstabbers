@@ -279,3 +279,38 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
   height: 26px;
   display: block;
 }
+/* Keep progress bar visible while scrolling */
+.progressOuter{
+  position: sticky;
+  top: 8px;           /* adjust if you want it tighter under the title */
+  z-index: 20;
+}
+
+/* Teleprompter scroll area: limited height + smooth scroll */
+.teleprompter{
+  max-height: 60vh;   /* keep it within the viewport */
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Center overlays on the screen (not inside the text box) */
+.turnOverlay{
+  position: fixed;    /* was absolute */
+  inset: 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(255,248,220,0.85);
+  z-index: 1000;
+}
+
+/* Optional: prevent the page behind from scrolling while overlay is open */
+body.modal-open {
+  overflow: hidden;
+}
+useEffect(() => {
+  const block = paused || finishOverlay;
+  if (block) document.body.classList.add("modal-open");
+  else document.body.classList.remove("modal-open");
+  return () => document.body.classList.remove("modal-open");
+}, [paused, finishOverlay]);
