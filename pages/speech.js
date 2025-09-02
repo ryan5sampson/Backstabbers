@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 // Defaults (used to prefill the Settings panel)
-const DEFAULT_WPM = { low: 200, medium: 200, high: 200 };
+const DEFAULT_WPM = { low: 180, medium: 180, high: 180 };
 const DEFAULT_MEAN_SENT_PER_TURN = { low: 1, medium: 2, high: 3 }; // avg sentences per turn
 
 export default function Speech() {
@@ -19,7 +19,7 @@ export default function Speech() {
 
 
   // ----- SETTINGS (live adjustable) -----
-  const [wpm, setWpm] = useState(DEFAULT_WPM[confidence] ?? 200);
+  const [wpm, setWpm] = useState(DEFAULT_WPM[confidence] ?? 180);
   const [meanSentencesPerTurn, setMeanSentencesPerTurn] = useState(
     DEFAULT_MEAN_SENT_PER_TURN[confidence] ?? 2
   );
