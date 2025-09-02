@@ -100,7 +100,7 @@ export default function Setup() {
               setTopic(DEFAULT_TOPICS[Math.floor(Math.random() * DEFAULT_TOPICS.length)])
             }
           >
-            Pick one
+            choose for me
           </button>
         </div>
 
