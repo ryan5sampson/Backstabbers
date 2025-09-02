@@ -19,6 +19,11 @@ export default async function handler(req, res) {
 
   let { topic, senators, confidence } = req.body || {};
   topic = (topic || "").trim();
+  const numPlayers = Math.max(1, parseInt(senators, 10) || 1);
+
+  // Determine target speech length based on number of players
+  const speechSeconds = 24 + numPlayers * 8;
+  const approxWords = Math.round((speechSeconds / 60) * 180); // 180 wpm baseline
 
   // If no topic, pick from our funny defaults—and also check cache first
   if (!topic) {
@@ -44,7 +49,7 @@ export default async function handler(req, res) {
       `Voice: confident, theatrical, self‑aggrandizing, with occasional jabs at senators and rival generals.`,
       `Pacing: short to medium sentences; vivid imagery; Roman references (aqueducts, legions, augurs, SPQR, laurel wreaths).`,
       `Close with a paragraph that begins with "In conclusion," (exact phrase) and then 2–4 more sentences. Do NOT end immediately after "In conclusion,"`,
-      `Length: about 60–120 seconds spoken (roughly 130–250 words).`,
+      `Length: about ${speechSeconds} seconds spoken (roughly ${approxWords} words).`,
       `End with [FINISH].`
     ].join('\n');
 
