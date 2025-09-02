@@ -38,11 +38,10 @@ export default async function handler(req, res) {
 
   try {
     const prompt = [
-      `Write a comedic speech as if JULIUS CAESAR is addressing the ROMAN PEOPLE (not the Senate).`,
+      `Write a comedic speech as if JULIUS CAESAR is addressing the ROMAN PEOPLE. The speech should only contain the words Caesar is saying, and nothing else.`,
       `Topic: "${topic}".`,
-      `Tone: bombastic oratory + modern asides; playful; PG‑13; witty callbacks; avoid copying any specific copyrighted text.`,
+      `Tone: bombastic oratory + modern asides; playful; ironic; PG‑13; witty callbacks; avoid copying any specific copyrighted text.`,
       `Voice: confident, theatrical, self‑aggrandizing, with occasional jabs at senators and rival generals.`,
-      `Audience cues: brief stage directions like [PAUSE] are okay, but do NOT include "[TURN]"`,
       `Pacing: short to medium sentences; vivid imagery; Roman references (aqueducts, legions, augurs, SPQR, laurel wreaths).`,
       `Close with a paragraph that begins with "In conclusion," (exact phrase) and then 2–4 more sentences. Do NOT end immediately after "In conclusion,"`,
       `Length: about 60–120 seconds spoken (roughly 130–250 words).`,
