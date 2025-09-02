@@ -635,3 +635,10 @@ body.modal-open {
 body.modal-open{
   overflow: hidden;
 }
+
+@media (max-width: 480px) and (orientation: portrait){
+  textarea{
+    max-height: 8rem;
+    overflow: auto;
+  }
+}
