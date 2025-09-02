@@ -606,18 +606,26 @@ body.modal-open {
 .teleprompter{
   position: relative;
   max-height: 60vh;   /* keeps content within the viewport */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .teleText{
-  position: absolute;
-  bottom: 50%;
-  transform: translateY(50%);
   width: 100%;
   text-align: center;
+}
+
+.word{
+  visibility: hidden;
+  display: inline-block;
+}
+
+.word.shown{
+  visibility: visible;
+}
+
+.word.highlight{
+  background: #fff3a5;
 }
 
 /* Center overlays on the screen (TURN/Finish) */

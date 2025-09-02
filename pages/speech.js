@@ -16,6 +16,7 @@ export default function Speech() {
   const title = decodeURIComponent(encodedTopic || "Address to the Roman People");
   const rawSpeech = decodeURIComponent(encoded || "");
   const teleRef = useRef(null);
+  const wordRefs = useRef([]);
 
 
   // ----- SETTINGS (live adjustable) -----
@@ -134,23 +135,18 @@ export default function Speech() {
     return points;
   }, [pre, confidence, granularity, meanSentencesPerTurn]);
   
-// Build paragraphs from paragraphBreaks
-const paragraphs = useMemo(() => {
+// Precompute word ranges for each paragraph so we can render words individually
+const paragraphSegments = useMemo(() => {
   if (!pre.words.length) return [];
-  const breaks = paragraphBreaks.slice();
-  if (breaks[breaks.length - 1] !== revealed && revealed > 0) breaks.push(revealed);
-
-  const parts = [];
+  const breaks = paragraphBreaks.concat(pre.words.length);
+  const segs = [];
   let prev = 0;
   for (const b of breaks) {
-    if (b > prev) parts.push(pre.words.slice(prev, b).join(" "));
+    segs.push({ start: prev, end: b });
     prev = b;
   }
-  if (parts.length === 0 && revealed > 0) {
-    parts.push(pre.words.slice(0, revealed).join(" "));
-  }
-  return parts;
-}, [paragraphBreaks, revealed, pre.words]);
+  return segs;
+}, [paragraphBreaks, pre.words.length]);
 
 // Progress
 const totalWords = pre.words.length;
@@ -179,7 +175,13 @@ useEffect(() => {
   return () => clearTimeout(timerRef.current);
 }, [started, paused, revealed, turnIndex, turnPoints, totalWords, wpm, finished]);
 
-// Teleprompter text is centered via CSS; no scroll handling needed
+// Keep the most recent word centered in the teleprompter
+useEffect(() => {
+  if (!teleRef.current) return;
+  const idx = revealed - 1;
+  const node = idx >= 0 ? wordRefs.current[idx] : null;
+  node?.scrollIntoView({ block: "center", behavior: "smooth" });
+}, [revealed]);
 
 // Optional: lock page scroll while overlays are visible
 useEffect(() => {
@@ -331,11 +333,27 @@ useEffect(() => {
 
             <div className="teleprompter" ref={teleRef}>
               <div className="teleText">
-                {paragraphs.length > 0 ? (
-                  paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
-                ) : (
-                  <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
-                )}
+                {paragraphSegments.map((seg, pIdx) => (
+                  <p key={pIdx} className="speech">
+                    {pre.words.slice(seg.start, seg.end).map((w, i) => {
+                      const wordIdx = seg.start + i;
+                      const shown = wordIdx < revealed;
+                      const highlight = wordIdx >= revealed - 3 && wordIdx < revealed;
+                      let cls = "word";
+                      if (shown) cls += " shown";
+                      if (highlight) cls += " highlight";
+                      return (
+                        <span
+                          key={wordIdx}
+                          ref={(el) => (wordRefs.current[wordIdx] = el)}
+                          className={cls}
+                        >
+                          {w + "\u00A0"}
+                        </span>
+                      );
+                    })}
+                  </p>
+                ))}
               </div>
             </div>
 
