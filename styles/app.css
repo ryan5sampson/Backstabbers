@@ -5,7 +5,7 @@ h1 { text-align: center; margin: 1rem 0; }
 .panel { width: 100%; max-width: 760px; background: #fffdf5; border: 6px solid #c9a86b; border-radius: 12px; padding: 24px; }
 .form { display: grid; gap: 12px; margin-bottom: 16px; }
 .row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-input, select { padding: 10px; border: 2px solid #c9a86b; border-radius: 6px; background: #fffdf5; }
+input, textarea, select { padding: 10px; border: 2px solid #c9a86b; border-radius: 6px; background: #fffdf5; }
 button { background: #c9a86b; color: #3b2a00; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; }
 .error { color: #a40000; background: #fff0f0; border: 2px solid #a40000; padding: 10px; border-radius: 6px; margin-top: 8px; }
 .scrollbox { min-height: 160px; }
@@ -22,8 +22,8 @@ button { background: #c9a86b; color: #3b2a00; border: none; padding: 10px 14px; 
 .row { display:flex; gap:8px; }
 @media (max-width: 520px){ .row { flex-direction: column; } }
 
-input, select, button { padding:10px; font-size:1rem; }
-input, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:#fffef7; }
+input, textarea, select, button { padding:10px; font-size:1rem; }
+input, textarea, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:#fffef7; }
 .btn { background:#c9a86b; color:#3b2a00; border:none; border-radius:6px; cursor:pointer; font-weight:700; }
 .btn.primary { width:100%; margin-top:8px; }
 .error { margin-top:10px; color:#a40000; background:#fff0f0; border:2px solid #a40000; padding:10px; border-radius:6px; }
@@ -105,7 +105,7 @@ body{
 }
 
 /* Touch-friendly controls */
-input, select, button{
+input, textarea, select, button{
   font-family: inherit;
   font-size: 1.05rem;
   padding: 12px 12px;
@@ -113,12 +113,17 @@ input, select, button{
 }
 
 /* Inputs */
-input, select{
+input, textarea, select{
   border: 2px solid var(--gold);
   background: #fffef7;
   color: var(--ink);
   flex: 1 1 220px;           /* makes them wrap nicely on narrow screens */
   min-width: 0;              /* prevents overflow */
+}
+
+textarea{
+  resize: none;
+  overflow: hidden;
 }
 
 /* Narrower number input so the label fits beside it */
@@ -169,7 +174,7 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
 /* Small screens: tighten fonts & spacing */
 @media (max-width: 480px){
   .title{ font-size: 1.55rem; letter-spacing:.05em; }
-  input, select, button{ font-size: 1rem; padding: 12px; }
+  input, textarea, select, button{ font-size: 1rem; padding: 12px; }
   .card{ padding: 14px; }
   .row{ gap:8px; }
 }
@@ -273,7 +278,7 @@ h1 { text-align: center; margin: 1rem 0; }
 .title { font-size: 2rem; font-family: Cinzel, serif; }
 .form { display: grid; gap: 12px; margin-bottom: 16px; }
 .row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-input, select { padding: 10px; border: 2px solid #c9a86b; border-radius: 6px; background: #fffdf5; }
+input, textarea, select { padding: 10px; border: 2px solid #c9a86b; border-radius: 6px; background: #fffdf5; }
 button { background: #c9a86b; color: #3b2a00; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; }
 .error { color: #a40000; background: #fff0f0; border: 2px solid #a40000; padding: 10px; border-radius: 6px; margin-top: 8px; }
 .teleprompter { margin-top: 16px; border: 3px solid #c9a86b; border-radius: 10px; background: #fffdf5; padding: 16px; }
@@ -291,8 +296,8 @@ button { background: #c9a86b; color: #3b2a00; border: none; padding: 10px 14px; 
 .row { display:flex; gap:8px; }
 @media (max-width: 520px){ .row { flex-direction: column; } }
 
-input, select, button { padding:10px; font-size:1rem; }
-input, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:#fffef7; }
+input, textarea, select, button { padding:10px; font-size:1rem; }
+input, textarea, select { flex:1; border:2px solid #c9a86b; border-radius:6px; background:#fffef7; }
 .btn { background:#c9a86b; color:#3b2a00; border:none; border-radius:6px; cursor:pointer; font-weight:700; }
 .btn.primary { width:100%; margin-top:8px; }
 .error { margin-top:10px; color:#a40000; background:#fff0f0; border:2px solid #a40000; padding:10px; border-radius:6px; }
@@ -375,7 +380,7 @@ body{
 }
 
 /* Touch-friendly controls */
-input, select, button{
+input, textarea, select, button{
   font-family: inherit;
   font-size: 1.05rem;
   padding: 12px 12px;
@@ -383,7 +388,7 @@ input, select, button{
 }
 
 /* Inputs */
-input, select{
+input, textarea, select{
   border: 2px solid var(--gold);
   background: #fffef7;
   color: var(--ink);
@@ -439,7 +444,7 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
 /* Small screens: tighten fonts & spacing */
 @media (max-width: 480px){
   .title{ font-size: 1.55rem; letter-spacing:.05em; }
-  input, select, button{ font-size: 1rem; padding: 12px; }
+  input, textarea, select, button{ font-size: 1rem; padding: 12px; }
   .card{ padding: 14px; }
   .row{ gap:8px; }
 }
