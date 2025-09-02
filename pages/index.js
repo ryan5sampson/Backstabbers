@@ -40,6 +40,21 @@ export default function Setup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Restore saved senator count on mount and persist changes
+  useEffect(() => {
+    const saved = typeof window !== "undefined" && localStorage.getItem("senators");
+    if (saved) {
+      const n = Math.min(12, Math.max(2, parseInt(saved, 10)));
+      if (!isNaN(n)) setSenators(n);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("senators", String(senators));
+    }
+  }, [senators]);
+
   useEffect(() => {
     if (topicRef.current) {
       topicRef.current.style.height = "auto";
@@ -105,13 +120,21 @@ export default function Setup() {
         </div>
 
         <label>Number of senators (players)</label>
-        <input
-          type="number"
-          min={2}
-          max={12}
-          value={senators}
-          onChange={(e) => setSenators(e.target.value)}
-        />
+        <div className="numSelect">
+          <button
+            type="button"
+            onClick={() => setSenators((s) => Math.max(2, s - 1))}
+          >
+            ↓
+          </button>
+          <div className="value">{senators}</div>
+          <button
+            type="button"
+            onClick={() => setSenators((s) => Math.min(12, s + 1))}
+          >
+            ↑
+          </button>
+        </div>
 
         <label>Confidence</label>
         <select value={confidence} onChange={(e) => setConfidence(e.target.value)}>
