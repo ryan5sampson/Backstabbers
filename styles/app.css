@@ -636,3 +636,15 @@ body.modal-open{
     overflow: auto;
   }
 }
+
+/* number selector with arrows */
+.numSelect{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.numSelect .value{
+  min-width:40px;
+  text-align:center;
+  font-weight:700;
+}
