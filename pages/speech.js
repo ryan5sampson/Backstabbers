@@ -179,14 +179,7 @@ useEffect(() => {
   return () => clearTimeout(timerRef.current);
 }, [started, paused, revealed, turnIndex, turnPoints, totalWords, wpm, finished]);
 
-// Auto-scroll the teleprompter pane as words reveal
-useEffect(() => {
-  if (!started || !teleRef.current) return;
-  teleRef.current.scrollTo({
-    top: teleRef.current.scrollHeight,
-    behavior: "smooth",
-  });
-}, [revealed, paragraphs, started]);
+// Teleprompter text is centered via CSS; no scroll handling needed
 
 // Optional: lock page scroll while overlays are visible
 useEffect(() => {
@@ -311,7 +304,8 @@ useEffect(() => {
 
         {!started ? (
           <div className="center">
-            <button className="btn primary" onClick={onStart}>▶ Start Speech</button>
+            <p className="speechNote">Hold your phone horizontally and 6 inches in front of your face, then hit begin speech.</p>
+            <button className="btn primary" onClick={onStart}>▶ Begin Speech</button>
           </div>
         ) : (
           <div className="teleWrap">
@@ -335,13 +329,15 @@ useEffect(() => {
               </div>
             ) : null}
 
-<div className="teleprompter" ref={teleRef}>
-  {paragraphs.length > 0 ? (
-    paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
-  ) : (
-    <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
-  )}
-</div>
+            <div className="teleprompter" ref={teleRef}>
+              <div className="teleText">
+                {paragraphs.length > 0 ? (
+                  paragraphs.map((p, i) => <p key={i} className="speech">{p}</p>)
+                ) : (
+                  <p className="speech">{pre.words.slice(0, revealed).join(" ")}</p>
+                )}
+              </div>
+            </div>
 
           </div>
         )}
