@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
 const DEFAULT_TOPICS = [
@@ -34,10 +34,18 @@ function ensureInConclusionBuffer(text) {
 export default function Setup() {
   const router = useRouter();
   const [topic, setTopic] = useState("");
+  const topicRef = useRef(null);
   const [senators, setSenators] = useState(4);
   const [confidence, setConfidence] = useState("medium");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (topicRef.current) {
+      topicRef.current.style.height = "auto";
+      topicRef.current.style.height = topicRef.current.scrollHeight + "px";
+    }
+  }, [topic]);
 
   async function handleGenerate() {
     try {
@@ -79,8 +87,9 @@ export default function Setup() {
 
         <label>Speech Topic</label>
         <div className="row">
-          <input
-            type="text"
+          <textarea
+            ref={topicRef}
+            rows={1}
             placeholder="Caesar salads, anyone?"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
