@@ -13,8 +13,17 @@ export default function Speech() {
     topic: encodedTopic,
   } = router.query;
 
-  const title = decodeURIComponent(encodedTopic || "Address to the Roman People");
-  const rawSpeech = decodeURIComponent(encoded || "");
+  function safeDecode(str, fallback = "") {
+    if (typeof str !== "string") return fallback;
+    try {
+      return decodeURIComponent(str);
+    } catch {
+      return str;
+    }
+  }
+
+  const title = safeDecode(encodedTopic, "Address to the Roman People");
+  const rawSpeech = safeDecode(encoded);
   const teleRef = useRef(null);
   const wordRefs = useRef([]);
 

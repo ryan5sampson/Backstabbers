@@ -67,10 +67,10 @@ export default function Setup() {
       router.push({
         pathname: "/speech",
         query: {
-          speech: encodeURIComponent(s),
+          speech: s,
           confidence,
           senators: String(senators),
-          topic: encodeURIComponent(topic || "Address to the Roman People")
+          topic: topic || "Address to the Roman People"
         }
       });
     } catch (e) {
