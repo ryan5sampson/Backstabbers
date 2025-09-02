@@ -557,24 +557,17 @@ button:active{ transform: translateY(1px); box-shadow: 0 1px 0 var(--gold-dark);
   z-index: 20;
 }
 
-/* Teleprompter area: keep text centered */
+/* Teleprompter scroll area: keeps text within view and scrolls smoothly */
 .teleprompter{
   position: relative;
   max-height: 60vh;   /* keep it within the viewport */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  display: block;
 }
 
-.teleText{
-  position: absolute;
-  bottom: 50%;
-  transform: translateY(50%);
-  width: 100%;
-  text-align: center;
-}
-
+/* Container for the revealed words */
 .speechNote{
   text-align: center;
   margin-bottom: 12px;
@@ -602,14 +595,7 @@ body.modal-open {
   z-index: 20;
 }
 
-/* Teleprompter scroll area: fixed height and smooth scroll */
-.teleprompter{
-  position: relative;
-  max-height: 60vh;   /* keeps content within the viewport */
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
-
+/* Container for the revealed words */
 .teleText{
   width: 100%;
   text-align: center;
